@@ -1,0 +1,12 @@
+{
+  "name": "exact-fill",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0 --port 47291 --strictPort",
+    "preview": "vite preview --host 0.0.0.0 --port 47291 --strictPort"
+  },
+  "devDependencies": {
+    "vite": "^6.3.5"
+  }
+}

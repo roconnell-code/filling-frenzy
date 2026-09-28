@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#14182b" />
+  <title>Exact Fill</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%23c42822' width='32' height='32' rx='6'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-size='14' fill='%23f4e7cf' font-family='sans-serif'%3E%24%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700&family=Share+Tech+Mono&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --display: "Syne", "Arial Black", sans-serif;
+      --body: "Outfit", "Avenir Next", "Segoe UI", sans-serif;
+      --mono: "Share Tech Mono", ui-monospace, "SFMono-Regular", monospace;
+      --ink: #24180f;
+      --cream: #f6edd9;
+      --paper: #f3e6cf;
+      --red: #d7263d;
+      --red-deep: #8e1522;
+      --led: #c8ff6a;
+      --amber: #ffb020;
+      --ground: #1a1816;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      min-height: 100%;
+      min-height: 100dvh;
+      color: var(--cream);
+      font-family: var(--body);
+      background: var(--ground);
+      overflow-x: hidden;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .sr {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .world {
+      min-height: 100%;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sky {
+      position: relative;
+      min-height: 30vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 22px 16px 0;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 78% 100%, rgba(255, 176, 106, 0.95), transparent 46%),
+        radial-gradient(ellipse at 12% 18%, rgba(90, 110, 160, 0.35), transparent 42%),
+        linear-gradient(#14182b 0%, #2c3558 42%, #c4553a 78%, #f0a35e 100%);
+    }
+
+    .sun {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      right: 12%;
+      bottom: 54px;
+      background: radial-gradient(circle, #fff6d8 0%, #ffb15a 50%, rgba(240, 122, 58, 0) 72%);
+      pointer-events: none;
+    }
+
+    .open-sign {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      z-index: 2;
+      font-family: var(--display);
+      font-size: 13px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #ff5d5d;
+      border: 2px solid #ff5d5d;
+      border-radius: 4px;
+      padding: 4px 8px 3px;
+      text-shadow: 0 0 8px #ff4d4d;
+      box-shadow: 0 0 14px rgba(255, 50, 50, 0.35), inset 0 0 10px rgba(255, 50, 50, 0.2);
+    }
+
+    .canopy { position: relative; z-index: 2; width: min(920px, 100%); margin: 0 auto; }
+
+    .fascia {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+      background: linear-gradient(#fffaf1, #eadcc4);
+      color: var(--ink);
+      border-radius: 12px 12px 4px 4px;
+      padding: 14px 20px 12px;
+      box-shadow: 0 12px 0 #c42822, 0 22px 30px rgba(0, 0, 0, 0.28);
+    }
+
+    .eyebrow {
+      margin: 0;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #8a5a32;
+    }
+
+    h1 {
+      margin: 2px 0 0;
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: clamp(32px, 5vw, 52px);
+      line-height: 0.85;
+      letter-spacing: -0.04em;
+    }
+
+    .till { text-align: right; }
+    .till span {
+      display: block;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #8a5a32;
+    }
+    .till strong {
+      display: block;
+      font-family: var(--mono);
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 400;
+      line-height: 1;
+      color: #1f6b12;
+    }
+    .till strong.pop { animation: pop 0.35s ease; }
+
+    .lights {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 36px 0;
+    }
+    .lights i {
+      width: 14px;
+      height: 22px;
+      border-radius: 0 0 8px 8px;
+      background: radial-gradient(circle at 50% 30%, #fff7d6, #ffd27a 45%, #e39a3a);
+      box-shadow: 0 10px 18px rgba(255, 186, 80, 0.45);
+    }
+    .lights i:nth-child(4) { animation: flicker 5.5s infinite; }
+
+    .lot {
+      position: relative;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 14px;
+      padding: 18px 16px 16px;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(255, 214, 150, 0.16), transparent 58%),
+        repeating-linear-gradient(90deg, transparent 0 92px, rgba(255, 255, 255, 0.025) 92px 93px),
+        linear-gradient(#4a4038 0%, #2a2623 30%, #171513 100%);
+    }
+
+    .car {
+      position: absolute;
+      z-index: 0;
+      left: max(0px, calc(50% - 560px));
+      bottom: 72px;
+      width: 220px;
+      height: auto;
+      transition: transform 1.3s ease-in;
+    }
+    .island { position: relative; z-index: 1; }
+    body[data-mode="under"] .car { transform: translateX(46vw); }
+
+    .island {
+      width: min(760px, 100%);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 18px;
+      background: linear-gradient(#e7dfd2, #cfc6b8);
+      padding: 18px;
+      border-radius: 18px 18px 8px 8px;
+      box-shadow: 0 10px 0 #8d867c, 0 18px 28px rgba(0, 0, 0, 0.35);
+    }
+
+    .pump {
+      position: relative;
+      width: min(360px, 100%);
+      flex: 1 1 320px;
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.22), transparent 16% 84%, rgba(0, 0, 0, 0.2)),
+        linear-gradient(#ef4b3c, #c42822 46%, #9a1b22);
+      border-radius: 26px 26px 16px 16px;
+      padding: 14px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 16px 30px rgba(0, 0, 0, 0.28);
+    }
+    body.is-shaking .pump { animation: shake 0.42s linear; }
+
+    .pump-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff6ea;
+      padding: 2px 8px 10px;
+    }
+    .pump-brand {
+      font-family: var(--display);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 18px;
+    }
+    .grade-pill {
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: #24180f;
+      color: var(--amber);
+      border-radius: 999px;
+      padding: 4px 8px;
+    }
+
+    .face {
+      background: linear-gradient(#fffaf1, #f0e2c8);
+      color: var(--ink);
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: inset 0 0 0 2px #2a2118;
+      touch-action: none;
+      cursor: pointer;
+    }
+    .pump.pumping .face { cursor: grabbing; }
+
+    .label {
+      margin: 0 0 4px;
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #8a5a32;
+    }
+
+    .sale-row, .meta-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: stretch;
+    }
+    .meta-row { margin-top: 10px; align-items: flex-end; }
+
+    .led {
+      position: relative;
+      display: inline-block;
+      background: #12160f;
+      border-radius: 10px;
+      padding: 6px 10px 4px;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.65), 0 1px 0 rgba(255, 255, 255, 0.45);
+    }
+    .led .ghost, .led .live {
+      font-family: var(--mono);
+      font-size: 52px;
+      line-height: 1;
+      letter-spacing: 0.03em;
+      display: block;
+      white-space: nowrap;
+    }
+    .led .ghost { color: rgba(190, 255, 120, 0.1); }
+    .led .live {
+      position: absolute;
+      left: 10px;
+      top: 6px;
+      color: var(--led);
+      text-shadow: 0 0 10px rgba(180, 255, 80, 0.45);
+    }
+    .led .live.close { color: #ffe56a; text-shadow: 0 0 10px rgba(255, 200, 60, 0.5); }
+    .led .live.grace {
+      color: #f7ffd4;
+      text-shadow: 0 0 14px rgba(214, 255, 106, 0.85);
+    }
+    .led.amber .ghost { color: rgba(255, 176, 32, 0.12); }
+    .led.amber .live { color: var(--amber); text-shadow: 0 0 8px rgba(255, 176, 32, 0.4); }
+    .led.led-sm .ghost, .led.led-sm .live { font-size: 28px; }
+    .led.flash { animation: pop 0.4s ease; }
+
+    .gal {
+      margin: 6px 0 0;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: #5c4a38;
+    }
+
+    .gauge {
+      width: 16px;
+      border-radius: 8px;
+      background: #1a120c;
+      box-shadow: inset 0 0 0 2px #2a2118;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+      min-height: 92px;
+    }
+    .gauge-fill {
+      width: 100%;
+      height: 0%;
+      background: linear-gradient(#ffe08a, #e23b2f 70%);
+      border-radius: 0 0 6px 6px;
+    }
+    body[data-mode="exact"] .gauge-fill { background: #b6e85a; height: 100% !important; }
+    body[data-mode="over"] .gauge-fill { background: #ff5a4e; height: 100% !important; }
+
+    .tank-read { text-align: right; }
+    .tank-read strong {
+      font-family: var(--mono);
+      font-size: 28px;
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    .status {
+      min-height: 1.3em;
+      margin: 10px 0 0;
+      font-size: 15px;
+      font-weight: 500;
+    }
+    .remain {
+      margin: 2px 0 0;
+      min-height: 1.2em;
+      color: #6d5c4a;
+      font-size: 13px;
+    }
+
+    .hold {
+      margin-top: 10px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+      background: #24180f;
+      color: var(--cream);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-family: var(--display);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .hold span:last-child {
+      font-family: var(--mono);
+      letter-spacing: 0.12em;
+      font-size: 14px;
+      border: 1px solid rgba(246, 237, 217, 0.4);
+      border-radius: 8px;
+      padding: 3px 8px;
+    }
+    .hold.hot {
+      background: #d6ff6a;
+      color: #142006;
+    }
+    .hold.hot span:last-child { border-color: #142006; }
+    body[data-mode="play"] .pump:not(.pumping) .hold:not(.hot) { animation: nudge 1.8s ease-in-out infinite; }
+
+    .stamp {
+      position: absolute;
+      left: 50%;
+      top: 46%;
+      transform: translate(-50%, -50%) rotate(-8deg);
+      font-family: var(--display);
+      font-size: 54px;
+      line-height: 1;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #1f6b12;
+      background: rgba(214, 255, 106, 0.92);
+      border: 4px solid #1f6b12;
+      border-radius: 10px;
+      padding: 4px 12px 2px;
+      pointer-events: none;
+    }
+    .stamp[hidden] { display: none; }
+
+    .board {
+      width: 230px;
+      flex: 0 0 230px;
+      background: var(--paper);
+      color: var(--ink);
+      border-radius: 12px;
+      padding: 14px 12px 12px;
+      margin-bottom: 8px;
+      box-shadow: 0 8px 0 #b7afa2, 0 12px 20px rgba(0, 0, 0, 0.22);
+    }
+    .board h2 {
+      margin: 0 0 8px;
+      font-family: var(--display);
+      font-size: 22px;
+      letter-spacing: -0.03em;
+    }
+    .ladder {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .ladder li {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      font-family: var(--mono);
+      font-size: 14px;
+      padding: 5px 7px;
+      border-radius: 7px;
+    }
+    .ladder li.now { background: var(--ink); color: var(--cream); }
+    .ladder li.done { color: #5f6b42; }
+    .ladder li.done b { text-decoration: line-through; }
+    .ladder li.bust { background: var(--red); color: white; }
+    .ladder li.left { background: #e7d39a; }
+    .mpg {
+      margin: 10px 0 0;
+      font-size: 12px;
+      color: #6d5c4a;
+      line-height: 1.35;
+    }
+
+    .lane {
+      margin: 0;
+      font-family: var(--mono);
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      color: rgba(246, 237, 217, 0.78);
+      text-align: center;
+    }
+
+    .sheet {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: grid;
+      place-items: center;
+      padding: 22px 16px;
+      background: rgba(14, 10, 8, 0.62);
+      overflow: auto;
+    }
+    body[data-mode="over"] .sheet,
+    body[data-mode="under"] .sheet {
+      align-items: end;
+      background: linear-gradient(to top, rgba(14, 10, 8, 0.82), rgba(14, 10, 8, 0.28) 62%, rgba(14, 10, 8, 0.08));
+    }
+    .sheet[hidden] { display: none !important; }
+
+    .sign {
+      width: min(460px, 100%);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.28), transparent 26%),
+        var(--paper);
+      color: var(--ink);
+      border: 3px solid #2a2118;
+      border-radius: 18px;
+      padding: 26px 24px 20px;
+      box-shadow: 0 1px 0 #fff6e8 inset, 0 24px 60px rgba(0, 0, 0, 0.45);
+      user-select: text;
+    }
+    .kicker {
+      margin: 0 0 6px;
+      font-family: var(--mono);
+      font-size: 12px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #8a5a32;
+    }
+    .sign h2 {
+      margin: 0;
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: clamp(48px, 10vw, 76px);
+      line-height: 0.88;
+      letter-spacing: -0.045em;
+    }
+    .miles-label {
+      margin: 8px 0 0;
+      font-size: 14px;
+      color: #6d5c4a;
+    }
+    .lede {
+      margin: 10px 0 0;
+      font-size: 17px;
+      line-height: 1.35;
+    }
+    .formula {
+      margin: 6px 0 0;
+      font-family: var(--mono);
+      font-size: 14px;
+      color: #3d4a28;
+    }
+    .rules {
+      list-style: none;
+      margin: 16px 0 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .rules li {
+      display: grid;
+      grid-template-columns: 74px 1fr;
+      gap: 8px;
+      align-items: baseline;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+    .rules b {
+      font-family: var(--display);
+      font-size: 14px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .rules .tag-exact { color: #1f6b12; }
+    .rules .tag-over { color: var(--red-deep); }
+    .rules .tag-under { color: #8a5a32; }
+    .facts {
+      margin: 14px 0 0;
+      display: grid;
+      gap: 0;
+    }
+    .facts div {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      border-top: 1px dashed #d9cbb3;
+      padding: 7px 0;
+      font-size: 14px;
+    }
+    .facts dt { color: #6d5c4a; }
+    .facts dd { margin: 0; font-family: var(--mono); }
+    .bests {
+      margin: 12px 0 0;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: #6d5c4a;
+      line-height: 1.45;
+    }
+    .act {
+      appearance: none;
+      width: 100%;
+      margin-top: 16px;
+      border: 0;
+      background: #c42822;
+      color: #fff8ee;
+      font-family: var(--display);
+      font-size: 20px;
+      letter-spacing: -0.02em;
+      padding: 12px 16px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #6e1612;
+    }
+    .act:hover { background: #d4332c; }
+    .act:active { transform: translateY(2px); box-shadow: 0 2px 0 #6e1612; }
+    .act:focus-visible { outline: 3px solid #24180f; outline-offset: 3px; }
+
+    @keyframes nudge {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-2px); }
+    }
+    @keyframes pop {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.06); }
+      100% { transform: scale(1); }
+    }
+    @keyframes shake {
+      10%, 90% { transform: translateX(-2px); }
+      20%, 80% { transform: translateX(5px); }
+      30%, 50%, 70% { transform: translateX(-9px); }
+      40%, 60% { transform: translateX(9px); }
+    }
+    @keyframes flicker {
+      0%, 19%, 21%, 54%, 56%, 100% { opacity: 1; }
+      20%, 55% { opacity: 0.35; }
+    }
+
+    @media (max-width: 760px) {
+      .sky { min-height: 168px; padding-top: 16px; }
+      .open-sign, .car { display: none; }
+      .fascia { padding: 12px 14px; }
+      .lights { padding-inline: 18px; }
+      .island { flex-direction: column; align-items: stretch; padding: 12px; }
+      .board { width: auto; flex-basis: auto; margin: 0; order: 2; }
+      .ladder { flex-direction: row; overflow-x: auto; }
+      .ladder li { flex: 0 0 auto; min-width: 108px; }
+      .led .ghost, .led .live { font-size: 44px; }
+      .pump { flex-basis: auto; }
+    }
+
+    @media (max-height: 740px) {
+      .sky { min-height: 132px; }
+      .led .ghost, .led .live { font-size: 40px; }
+      .gauge { min-height: 72px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .lights i:nth-child(4),
+      body[data-mode="play"] .pump:not(.pumping) .hold:not(.hot),
+      .till strong.pop,
+      .led.flash,
+      body.is-shaking .pump { animation: none; }
+      .car { transition: none; }
+    }
+  </style>
+</head>
+<body data-mode="intro">
+  <div class="world">
+    <header class="sky">
+      <div class="sun" aria-hidden="true"></div>
+      <div class="open-sign" aria-hidden="true">Open</div>
+      <div class="canopy">
+        <div class="fascia">
+          <div>
+            <p class="eyebrow">Harbor &amp; 5th</p>
+            <h1>Exact Fill</h1>
+          </div>
+          <div class="till">
+            <span>Till</span>
+            <strong id="bank">$0.00</strong>
+          </div>
+        </div>
+        <div class="lights" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+      </div>
+    </header>
+
+    <main class="lot">
+      <svg class="car" viewBox="0 0 240 90" aria-hidden="true">
+        <path fill="#16352c" d="M18 58 H46 L68 34 H148 L170 58 H214 Q226 58 226 70 V76 H14 V66 Q14 58 26 58 Z"/>
+        <path fill="#9fd4cb" d="M78 38 H118 L132 56 H74 Z"/>
+        <path fill="#c9efe8" d="M136 40 H156 L166 56 H128 Z" opacity="0.8"/>
+        <circle cx="72" cy="76" r="13" fill="#141210"/>
+        <circle cx="72" cy="76" r="5" fill="#d9d0c2"/>
+        <circle cx="184" cy="76" r="13" fill="#141210"/>
+        <circle cx="184" cy="76" r="5" fill="#d9d0c2"/>
+      </svg>
+
+      <div class="island">
+        <section class="pump" id="pump" aria-describedby="status lane">
+          <div class="pump-top">
+            <span class="pump-brand">Red Can</span>
+            <span class="grade-pill">Regular</span>
+          </div>
+          <div class="face" id="face">
+            <div class="sale-row">
+              <div>
+                <p class="label">This sale</p>
+                <div class="led" id="sale-led">
+                  <span class="ghost" id="sale-ghost">$8.88</span>
+                  <span class="live" id="sale">$0.00</span>
+                </div>
+                <p class="gal" id="gallons">0.000 gal</p>
+              </div>
+              <div class="gauge" aria-hidden="true"><div class="gauge-fill" id="gauge"></div></div>
+            </div>
+            <div class="meta-row">
+              <div>
+                <p class="label" id="price-label">Price · sale 1</p>
+                <div class="led led-sm amber" id="target-led">
+                  <span class="ghost" id="target-ghost">$8.88</span>
+                  <span class="live" id="target">$2.00</span>
+                </div>
+              </div>
+              <div class="tank-read">
+                <p class="label">Tank if you leave</p>
+                <strong id="tank">0.0 mi</strong>
+              </div>
+            </div>
+            <p class="status" id="status" aria-live="polite">Hold space to run the pump.</p>
+            <p class="remain" id="remain" aria-hidden="true">The sale starts at zero.</p>
+            <div class="hold" id="hold">
+              <span id="hold-kicker">Hold</span>
+              <span id="hold-key">Space</span>
+            </div>
+          </div>
+          <div class="stamp" id="stamp" hidden>Exact</div>
+        </section>
+
+        <aside class="board" aria-label="Prices tonight">
+          <h2>Tonight</h2>
+          <ol class="ladder" id="ladder"></ol>
+          <p class="mpg">$3.50 a gallon. Your car gets 28 mpg — a dollar of gas is eight miles.</p>
+        </aside>
+      </div>
+      <p class="lane" id="lane">Hold space or the pump. Let go on the price.</p>
+    </main>
+  </div>
+
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title"></div>
+  <p class="sr" id="live" aria-live="assertive"></p>
+
+  <script>
+    const PRICE_PER_GALLON = 3.5;
+    const MPG = 28;
+    const MILES_PER_DOLLAR = MPG / PRICE_PER_GALLON;
+
+    const LADDER = [200, 500, 800, 1200, 1700, 2400, 3300, 4500, 6000, 8000, 10500, 14000, 18500, 24500, 32000];
+
+    const TUNING = {
+      graceStartMs: 480,
+      graceStepMs: 32,
+      graceFloorMs: 170,
+      finishStart: 5,
+      finishStep: 1.15,
+      closeCents: 12,
+      creepCents: 40,
+      creepRate: 24,
+    };
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const els = {
+      bank: document.getElementById("bank"),
+      sale: document.getElementById("sale"),
+      saleGhost: document.getElementById("sale-ghost"),
+      gallons: document.getElementById("gallons"),
+      gauge: document.getElementById("gauge"),
+      target: document.getElementById("target"),
+      targetGhost: document.getElementById("target-ghost"),
+      targetLed: document.getElementById("target-led"),
+      priceLabel: document.getElementById("price-label"),
+      tank: document.getElementById("tank"),
+      status: document.getElementById("status"),
+      remain: document.getElementById("remain"),
+      hold: document.getElementById("hold"),
+      holdKicker: document.getElementById("hold-kicker"),
+      holdKey: document.getElementById("hold-key"),
+      stamp: document.getElementById("stamp"),
+      pump: document.getElementById("pump"),
+      face: document.getElementById("face"),
+      ladder: document.getElementById("ladder"),
+      sheet: document.getElementById("sheet"),
+      live: document.getElementById("live"),
+    };
+
+    const sources = new Set();
+    let pointerHeld = false;
+
+    const state = {
+      mode: "intro",
+      round: 1,
+      target: 200,
+      cents: 0,
+      acc: 0,
+      bank: 0,
+      gasCents: 0,
+      pumping: false,
+      latched: false,
+      graceElapsed: 0,
+      dinged: false,
+      lastTs: 0,
+      lastFrame: 0,
+      flashUntil: 0,
+      overBy: 0,
+      lost: 0,
+      stoppedAt: 0,
+      pendingAction: null,
+      milesTo: 0,
+      shownMiles: 0,
+      milesStart: 0,
+      built: "",
+      lastBank: -1,
+      lastTarget: -1,
+    };
+
+    const store = {
+      get(key) {
+        try {
+          return Number(localStorage.getItem(key) || 0) || 0;
+        } catch {
+          return 0;
+        }
+      },
+      set(key, value) {
+        try {
+          localStorage.setItem(key, String(value));
+        } catch {
+          /* private mode */
+        }
+      },
+    };
+
+    const sfx = (() => {
+      let ctx = null;
+      let dead = false;
+      let noise = null;
+      let humGain = null;
+      let lastTick = 0;
+
+      function ac() {
+        if (dead) return null;
+        try {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (!AC) {
+            dead = true;
+            return null;
+          }
+          if (!ctx) ctx = new AC();
+          if (ctx.state === "suspended") ctx.resume();
+          return ctx;
+        } catch {
+          dead = true;
+          return null;
+        }
+      }
+
+      function tone(freq, dur, type, vol, delay = 0) {
+        const c = ac();
+        if (!c) return;
+        const o = c.createOscillator();
+        const g = c.createGain();
+        o.type = type;
+        o.frequency.value = freq;
+        o.connect(g);
+        g.connect(c.destination);
+        const t = c.currentTime + delay;
+        g.gain.setValueAtTime(vol, t);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+        o.start(t);
+        o.stop(t + dur + 0.02);
+      }
+
+      return {
+        unlock: ac,
+        startHum() {
+          const c = ac();
+          if (!c || noise) return;
+          const length = Math.floor(c.sampleRate * 1.2);
+          const buffer = c.createBuffer(1, length, c.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < length; i++) data[i] = Math.random() * 2 - 1;
+          const src = c.createBufferSource();
+          src.buffer = buffer;
+          src.loop = true;
+          const filter = c.createBiquadFilter();
+          filter.type = "lowpass";
+          filter.frequency.value = 240;
+          humGain = c.createGain();
+          humGain.gain.value = 0.0001;
+          src.connect(filter);
+          filter.connect(humGain);
+          humGain.connect(c.destination);
+          src.start();
+          noise = src;
+          humGain.gain.exponentialRampToValueAtTime(0.04, c.currentTime + 0.08);
+        },
+        stopHum() {
+          if (!noise || !ctx || !humGain) return;
+          const src = noise;
+          const gain = humGain;
+          noise = null;
+          humGain = null;
+          const t = ctx.currentTime;
+          gain.gain.cancelScheduledValues(t);
+          gain.gain.setValueAtTime(Math.max(0.0001, gain.gain.value), t);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+          setTimeout(() => {
+            try { src.stop(); } catch { /* already stopped */ }
+            try { src.disconnect(); gain.disconnect(); } catch { /* already gone */ }
+          }, 90);
+        },
+        tick(cents, target, ts) {
+          const remain = target - cents;
+          const gap = remain <= TUNING.creepCents ? 70 : 48;
+          if (ts - lastTick < gap) return;
+          lastTick = ts;
+          const freq = remain <= TUNING.closeCents ? 720 : remain <= TUNING.creepCents ? 360 : 170;
+          tone(freq, 0.03, "square", remain <= TUNING.closeCents ? 0.045 : 0.028);
+        },
+        ding() {
+          tone(920, 0.12, "triangle", 0.08);
+        },
+        exact() {
+          tone(523, 0.12, "triangle", 0.11);
+          tone(659, 0.14, "triangle", 0.09, 0.08);
+          tone(784, 0.24, "triangle", 0.09, 0.16);
+        },
+        over() {
+          tone(130, 0.38, "sawtooth", 0.07);
+          tone(86, 0.5, "square", 0.04, 0.06);
+        },
+        under() {
+          tone(392, 0.16, "sine", 0.07);
+          tone(330, 0.2, "sine", 0.06, 0.1);
+          tone(262, 0.28, "sine", 0.05, 0.2);
+        },
+      };
+    })();
+
+    function targetFor(round) {
+      if (round <= LADDER.length) return LADDER[round - 1];
+      let cents = LADDER[LADDER.length - 1];
+      for (let i = LADDER.length + 1; i <= round; i++) {
+        cents = Math.round((cents * 1.32) / 100) * 100;
+      }
+      return cents;
+    }
+
+    function graceFor(round) {
+      return Math.max(TUNING.graceFloorMs, TUNING.graceStartMs - (round - 1) * TUNING.graceStepMs);
+    }
+
+    function finishRate(round) {
+      return TUNING.finishStart + (round - 1) * TUNING.finishStep;
+    }
+
+    function cruiseRate(target, round) {
+      const seconds = Math.max(2.15, 3.5 - (round - 1) * 0.12);
+      return target / seconds;
+    }
+
+    function rateFor(cents, target, round) {
+      const remaining = target - cents;
+      const cruise = cruiseRate(target, round);
+      if (remaining > TUNING.creepCents) return cruise;
+      if (remaining > TUNING.closeCents) return Math.min(cruise, TUNING.creepRate);
+      return Math.min(cruise, finishRate(round));
+    }
+
+    function money(cents) {
+      return "$" + (Math.abs(cents) / 100).toFixed(2);
+    }
+
+    function ghost(text) {
+      return text.replace(/\d/g, "8");
+    }
+
+    function gallonsFromCents(cents) {
+      return cents / 100 / PRICE_PER_GALLON;
+    }
+
+    function milesFromCents(cents) {
+      return (cents / 100) * MILES_PER_DOLLAR;
+    }
+
+    function tankCents() {
+      if (state.mode === "play") return state.gasCents + state.cents;
+      return state.gasCents;
+    }
+
+    function setText(node, text) {
+      if (node.textContent !== text) node.textContent = text;
+    }
+
+    function bests() {
+      return {
+        till: store.get("exact-fill-till"),
+        miles: store.get("exact-fill-miles") / 10,
+        round: store.get("exact-fill-round"),
+      };
+    }
+
+    function remember() {
+      if (state.bank > store.get("exact-fill-till")) store.set("exact-fill-till", state.bank);
+      if (state.round > store.get("exact-fill-round")) store.set("exact-fill-round", state.round);
+    }
+
+    function bestsLine() {
+      const best = bests();
+      if (!best.till && !best.miles && !best.round) return "";
+      return "Best till " + money(best.till) + " · best tank " + best.miles.toFixed(1) + " mi · best sale " + (best.round || "—");
+    }
+
+    function phase() {
+      if (state.mode === "exact") return "exact";
+      if (state.mode !== "play") return state.mode;
+      if (state.cents === state.target) return "locked";
+      if (state.target - state.cents <= TUNING.creepCents && state.cents > 0) return "close";
+      if (state.pumping) return "running";
+      return "idle";
+    }
+
+    function statusLine() {
+      switch (phase()) {
+        case "exact":
+          return "Exact. The price goes up.";
+        case "locked":
+          return "On the price. Let go.";
+        case "close":
+          return "Close. Get ready to let go.";
+        case "running":
+          return "Running. Let go under and you drive off.";
+        default:
+          return "Hold space to run the pump.";
+      }
+    }
+
+    function remainLine() {
+      if (state.mode === "exact") return "That sale stays in the till.";
+      if (state.mode !== "play") return "";
+      if (state.cents === 0) return "The sale starts at zero.";
+      if (state.cents === state.target) return "Release the spacebar.";
+      if (state.cents > state.target) return "Past the price.";
+      return money(state.target - state.cents) + " under the price";
+    }
+
+    function renderDigits() {
+      const sale = money(state.cents);
+      setText(els.saleGhost, ghost(sale));
+      setText(els.sale, sale);
+      setText(els.gallons, gallonsFromCents(state.cents).toFixed(3) + " gal");
+      const price = money(state.target);
+      setText(els.targetGhost, ghost(price));
+      setText(els.target, price);
+      setText(els.priceLabel, "Price · sale " + state.round);
+      setText(els.bank, money(state.bank));
+      setText(els.tank, milesFromCents(tankCents()).toFixed(1) + " mi");
+      setText(els.status, statusLine());
+      setText(els.remain, remainLine());
+
+      const remain = state.target - state.cents;
+      const locked = state.mode === "play" && state.cents === state.target;
+      els.sale.classList.toggle("close", state.mode === "play" && remain > 0 && remain <= TUNING.creepCents);
+      els.sale.classList.toggle("grace", locked && state.pumping);
+      els.pump.classList.toggle("pumping", state.pumping);
+      els.hold.classList.toggle("hot", locked);
+      setText(els.holdKicker, locked ? "Let go" : "Hold");
+      setText(els.holdKey, locked ? "Now" : state.pumping ? "Pumping" : "Space");
+      els.stamp.hidden = state.mode !== "exact";
+      document.body.dataset.mode = state.mode;
+
+      const fill = state.target ? Math.min(100, (state.cents / state.target) * 100) : 0;
+      els.gauge.style.height = fill + "%";
+
+      if (state.bank !== state.lastBank) {
+        if (state.lastBank >= 0 && state.bank > state.lastBank) {
+          els.bank.classList.remove("pop");
+          void els.bank.offsetWidth;
+          els.bank.classList.add("pop");
+        }
+        state.lastBank = state.bank;
+      }
+      if (state.target !== state.lastTarget) {
+        if (state.lastTarget > 0) {
+          els.targetLed.classList.remove("flash");
+          void els.targetLed.offsetWidth;
+          els.targetLed.classList.add("flash");
+        }
+        state.lastTarget = state.target;
+      }
+
+      if (state.mode === "under") {
+        const node = document.getElementById("miles");
+        if (node) node.textContent = state.shownMiles.toFixed(1);
+      }
+    }
+
+    function renderLadder() {
+      const focus = state.mode === "exact" ? state.round + 1 : state.round;
+      const start = Math.max(1, focus - 1);
+      const items = [];
+      for (let r = start; r < start + 6; r++) {
+        const cleared = r < state.round || (state.mode === "exact" && r <= state.round);
+        let cls = "";
+        if (r === state.round && state.mode === "over") cls = "bust";
+        else if (r === state.round && state.mode === "under") cls = "left";
+        else if (cleared) cls = "done";
+        else if (r === focus && state.mode !== "over" && state.mode !== "under") cls = "now";
+        items.push(
+          '<li class="' + cls + '"><span>Sale ' + r + '</span><b>' + money(targetFor(r)) + "</b></li>"
+        );
+      }
+      const html = items.join("");
+      if (els.ladder.dataset.html !== html) {
+        els.ladder.innerHTML = html;
+        els.ladder.dataset.html = html;
+      }
+    }
+
+    function renderSheet() {
+      if (state.mode === "play" || state.mode === "exact") {
+        els.sheet.hidden = true;
+        state.built = "";
+        return;
+      }
+      if (state.built === state.mode) return;
+      state.built = state.mode;
+      els.sheet.hidden = false;
+      const best = bestsLine();
+      const bestHtml = best ? '<p class="bests">' + best + "</p>" : "";
+
+      if (state.mode === "intro") {
+        els.sheet.innerHTML =
+          '<article class="sign">' +
+          '<p class="kicker">Harbor &amp; 5th</p>' +
+          '<h2 id="sheet-title">Stop on the price.</h2>' +
+          '<p class="lede">Hold the spacebar, or press and hold the pump. The sale runs up. Let go to lock it.</p>' +
+          '<ol class="rules">' +
+          '<li><b class="tag-exact">Exact</b><span>You keep going. The price goes up, and the money stays in the till.</span></li>' +
+          '<li><b class="tag-over">Over</b><span>You lose all the money.</span></li>' +
+          '<li><b class="tag-under">Under</b><span>You leave with the gas. The receipt shows how many miles it is.</span></li>' +
+          "</ol>" +
+          bestHtml +
+          '<button class="act" type="button" data-act>Start the pump</button>' +
+          "</article>";
+      } else if (state.mode === "over") {
+        const lostLine = state.lost > 0
+          ? "The till had " + money(state.lost) + ". You lose all the money."
+          : "You lose all the money. The till stays empty.";
+        els.sheet.innerHTML =
+          '<article class="sign">' +
+          '<p class="kicker">Over by ' + money(state.overBy) + "</p>" +
+          '<h2 id="sheet-title">$0.00</h2>' +
+          '<p class="lede">' + lostLine + "</p>" +
+          '<dl class="facts">' +
+          fact("The price", money(state.target)) +
+          fact("You pumped", money(state.stoppedAt)) +
+          fact("Over by", money(state.overBy)) +
+          fact("Till now", "$0.00") +
+          "</dl>" +
+          bestHtml +
+          '<button class="act" type="button" data-act>Back to the pump</button>' +
+          "</article>";
+        els.live.textContent = "Over the price. You lose all the money.";
+      } else if (state.mode === "under") {
+        const gallons = gallonsFromCents(state.gasCents);
+        const miles = milesFromCents(state.gasCents);
+        const lede = miles < 1
+          ? "A splash in the hose. It still counts."
+          : state.underBy <= 10
+            ? "A few cents short. You left with the gas."
+            : "You let go early and left with the gas.";
+        els.sheet.innerHTML =
+          '<article class="sign">' +
+          '<p class="kicker">You left with the gas</p>' +
+          '<p class="miles-label">Miles of gas</p>' +
+          '<h2 id="sheet-title"><span id="miles">' + state.shownMiles.toFixed(1) + '</span></h2>' +
+          '<p class="lede">' + lede + "</p>" +
+          '<p class="formula">' + gallons.toFixed(3) + " gal at $" + PRICE_PER_GALLON.toFixed(2) + " · " + MPG + " mpg · a dollar is 8 miles</p>" +
+          '<dl class="facts">' +
+          fact("Gallons in the tank", gallons.toFixed(3)) +
+          fact("You stopped at", money(state.stoppedAt)) +
+          fact("The price was", money(state.target)) +
+          fact("Under by", money(state.underBy)) +
+          fact("Till you kept", money(state.bank)) +
+          "</dl>" +
+          bestHtml +
+          '<button class="act" type="button" data-act>Pull in again</button>' +
+          "</article>";
+        els.live.textContent = "You left with the gas. " + miles.toFixed(1) + " miles.";
+      }
+
+      const act = els.sheet.querySelector("[data-act]");
+      if (act) act.focus({ preventScroll: true });
+    }
+
+    function fact(label, value) {
+      return "<div><dt>" + label + "</dt><dd>" + value + "</dd></div>";
+    }
+
+    function render() {
+      renderDigits();
+      renderLadder();
+      renderSheet();
+    }
+
+    function startRun() {
+      sources.clear();
+      pointerHeld = false;
+      sfx.stopHum();
+      state.mode = "play";
+      state.round = 1;
+      state.target = targetFor(1);
+      state.cents = 0;
+      state.acc = 0;
+      state.bank = 0;
+      state.gasCents = 0;
+      state.pumping = false;
+      state.graceElapsed = 0;
+      state.dinged = false;
+      state.overBy = 0;
+      state.lost = 0;
+      state.stoppedAt = 0;
+      state.underBy = 0;
+      state.pendingAction = null;
+      state.built = "";
+      if (document.activeElement && document.activeElement !== document.body) {
+        document.activeElement.blur();
+      }
+      els.live.textContent = "Sale 1. The price is " + money(state.target) + ". Hold space to pump.";
+      render();
+    }
+
+    function nextRound() {
+      sources.clear();
+      state.pumping = false;
+      sfx.stopHum();
+      state.round += 1;
+      state.target = targetFor(state.round);
+      state.cents = 0;
+      state.acc = 0;
+      state.graceElapsed = 0;
+      state.dinged = false;
+      state.mode = "play";
+      state.built = "";
+      render();
+    }
+
+    function resolve(kind) {
+      if (state.mode !== "play") return;
+      state.pumping = false;
+      sfx.stopHum();
+      if (kind === "exact") {
+        state.bank += state.target;
+        state.gasCents += state.target;
+        state.stoppedAt = state.target;
+        remember();
+        state.mode = "exact";
+        state.flashUntil = performance.now() + (reduceMotion ? 500 : 1100);
+        sfx.exact();
+        els.live.textContent = "Exact " + money(state.target) + ". The price goes up. Till is " + money(state.bank) + ".";
+      } else if (kind === "over") {
+        state.overBy = state.cents - state.target;
+        state.stoppedAt = state.cents;
+        state.lost = state.bank;
+        state.bank = 0;
+        state.mode = "over";
+        sfx.over();
+        document.body.classList.remove("is-shaking");
+        void document.body.offsetWidth;
+        document.body.classList.add("is-shaking");
+      } else {
+        state.stoppedAt = state.cents;
+        state.underBy = state.target - state.cents;
+        state.gasCents += state.cents;
+        const tenths = Math.round(milesFromCents(state.gasCents) * 10);
+        if (tenths > store.get("exact-fill-miles")) store.set("exact-fill-miles", tenths);
+        state.milesTo = milesFromCents(state.gasCents);
+        state.shownMiles = reduceMotion ? state.milesTo : 0;
+        state.milesStart = performance.now();
+        state.mode = "under";
+        sfx.under();
+      }
+      render();
+    }
+
+    function bust() {
+      sources.clear();
+      pointerHeld = false;
+      state.pumping = false;
+      state.latched = true;
+      sfx.stopHum();
+      resolve("over");
+    }
+
+    function startPump(ts) {
+      if (state.latched || state.mode !== "play" || state.pumping) return;
+      state.pumping = true;
+      state.lastTs = ts;
+      state.acc = 0;
+      sfx.unlock();
+      sfx.startHum();
+      render();
+    }
+
+    function stopPump() {
+      state.pumping = false;
+      sfx.stopHum();
+      if (state.mode !== "play") return;
+      if (state.cents <= 0) {
+        render();
+        return;
+      }
+      if (state.cents === state.target) resolve("exact");
+      else if (state.cents > state.target) resolve("over");
+      else resolve("under");
+    }
+
+    function down(src, ts) {
+      if (state.latched || state.mode !== "play") return;
+      const before = sources.size;
+      sources.add(src);
+      if (before === 0) startPump(ts);
+    }
+
+    function up(src) {
+      if (!sources.has(src)) return;
+      sources.delete(src);
+      if (sources.size === 0) stopPump();
+    }
+
+    function stepPump(ts, gap) {
+      if (state.cents === state.target) {
+        state.graceElapsed += gap;
+        if (!state.dinged) {
+          state.dinged = true;
+          sfx.ding();
+        }
+        if (state.graceElapsed >= graceFor(state.round)) {
+          state.cents += 1;
+          bust();
+        } else {
+          render();
+        }
+        return;
+      }
+
+      const dt = Math.min(0.05, Math.max(0, ts - state.lastTs) / 1000);
+      state.lastTs = ts;
+      state.acc += rateFor(state.cents, state.target, state.round) * dt;
+      let moved = false;
+      while (state.acc >= 1 && state.cents < state.target) {
+        state.acc -= 1;
+        state.cents += 1;
+        moved = true;
+        const remaining = state.target - state.cents;
+        if (remaining === 0) {
+          state.acc = 0;
+          state.graceElapsed = 0;
+          state.dinged = true;
+          sfx.ding();
+          break;
+        }
+        if (remaining <= TUNING.creepCents) {
+          state.acc = 0;
+          break;
+        }
+      }
+      if (moved) sfx.tick(state.cents, state.target, ts);
+      render();
+    }
+
+    function tickMiles(ts) {
+      if (state.shownMiles === state.milesTo) return;
+      const dur = 900;
+      const p = Math.min(1, (ts - state.milesStart) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      state.shownMiles = state.milesTo * eased;
+      if (p >= 1) state.shownMiles = state.milesTo;
+      const node = document.getElementById("miles");
+      if (node) node.textContent = state.shownMiles.toFixed(1);
+    }
+
+    function frame(ts) {
+      requestAnimationFrame(frame);
+      const gap = state.lastFrame ? Math.min(50, ts - state.lastFrame) : 16;
+      state.lastFrame = ts;
+
+      if (state.mode === "exact" && ts >= state.flashUntil) {
+        nextRound();
+        return;
+      }
+      if (state.mode === "under") {
+        tickMiles(ts);
+        return;
+      }
+      if (state.mode === "play" && state.pumping) stepPump(ts, gap);
+    }
+
+    function advance() {
+      if (state.mode === "intro" || state.mode === "over" || state.mode === "under") startRun();
+    }
+
+    function onKeyDown(e) {
+      if (e.key === "Enter") {
+        if (state.mode === "intro" || state.mode === "over" || state.mode === "under") {
+          e.preventDefault();
+          advance();
+        }
+        return;
+      }
+      if (e.code !== "Space") return;
+      e.preventDefault();
+      if (e.repeat || state.latched) return;
+      if (state.mode === "intro" || state.mode === "over" || state.mode === "under") {
+        state.pendingAction = "advance";
+        return;
+      }
+      if (state.mode === "exact") {
+        state.flashUntil = 0;
+        state.latched = true;
+        return;
+      }
+      if (state.mode === "play") down("key", performance.now());
+    }
+
+    function onKeyUp(e) {
+      if (e.code !== "Space") return;
+      e.preventDefault();
+      const pending = state.pendingAction;
+      state.pendingAction = null;
+      state.latched = false;
+      if (pending === "advance") {
+        advance();
+        return;
+      }
+      up("key");
+    }
+
+    els.face.addEventListener("pointerdown", (e) => {
+      if (!e.isPrimary || e.button > 0) return;
+      if (state.mode === "exact") {
+        state.flashUntil = 0;
+        state.latched = true;
+        return;
+      }
+      if (state.mode !== "play" || state.latched) return;
+      e.preventDefault();
+      els.face.setPointerCapture(e.pointerId);
+      pointerHeld = true;
+      down("pointer", performance.now());
+    });
+
+    function endPointer() {
+      const held = pointerHeld;
+      pointerHeld = false;
+      state.latched = false;
+      if (held) up("pointer");
+    }
+
+    els.face.addEventListener("pointerup", endPointer);
+    els.face.addEventListener("pointercancel", endPointer);
+
+    els.sheet.addEventListener("click", (e) => {
+      if (e.target.closest("[data-act]")) advance();
+    });
+
+    window.addEventListener("keydown", onKeyDown, true);
+    window.addEventListener("keyup", onKeyUp, true);
+
+    render();
+    requestAnimationFrame(frame);
+  </script>
+</body>
+</html>
