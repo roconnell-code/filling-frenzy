@@ -99,7 +99,20 @@
       box-shadow: 0 0 14px rgba(255, 50, 50, 0.35), inset 0 0 10px rgba(255, 50, 50, 0.2);
     }
 
-    .canopy { position: relative; z-index: 2; width: min(920px, 100%); margin: 0 auto; }
+    .hills {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 78px;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at 18% 100%, #243049 0 42%, transparent 43%),
+        radial-gradient(ellipse at 62% 130%, #1a2236 0 48%, transparent 49%),
+        radial-gradient(ellipse at 92% 100%, #2a334c 0 36%, transparent 37%);
+    }
+
+    .canopy { position: relative; z-index: 2; width: min(1040px, 100%); margin: 0 auto; }
 
     .fascia {
       display: flex;
@@ -182,39 +195,152 @@
     .car {
       position: absolute;
       z-index: 0;
-      left: max(0px, calc(50% - 560px));
-      bottom: 72px;
-      width: 220px;
+      left: max(0px, calc(50% - 700px));
+      bottom: 84px;
+      width: 210px;
       height: auto;
       transition: transform 1.3s ease-in;
     }
-    .island { position: relative; z-index: 1; }
     body[data-mode="under"] .car { transform: translateX(46vw); }
 
+    .lot::before {
+      content: "";
+      position: absolute;
+      left: 12%;
+      right: 12%;
+      top: 0;
+      height: 90px;
+      pointer-events: none;
+      background: radial-gradient(ellipse at 50% 0%, rgba(255, 206, 130, 0.28), transparent 68%);
+    }
+
+    .bay {
+      width: min(1040px, 100%);
+      display: grid;
+      grid-template-columns: 16px minmax(0, 1fr) 16px;
+      align-items: end;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .pole {
+      height: 220px;
+      align-self: stretch;
+      margin-bottom: 10px;
+      border-radius: 3px 3px 0 0;
+      background: linear-gradient(90deg, #f7f2e8, #d5cec2 42%, #8f897f);
+      box-shadow: inset -5px 0 0 rgba(0, 0, 0, 0.16), 0 8px 16px rgba(0, 0, 0, 0.25);
+    }
+
     .island {
-      width: min(760px, 100%);
+      position: relative;
+      z-index: 1;
       display: flex;
-      align-items: flex-end;
+      align-items: stretch;
       justify-content: center;
-      gap: 18px;
-      background: linear-gradient(#e7dfd2, #cfc6b8);
-      padding: 18px;
-      border-radius: 18px 18px 8px 8px;
-      box-shadow: 0 10px 0 #8d867c, 0 18px 28px rgba(0, 0, 0, 0.35);
+      gap: 22px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.28), transparent 28%),
+        linear-gradient(#efe6d8, #cfc6b8);
+      padding: 40px 26px 16px;
+      border-radius: 16px 16px 8px 8px;
+      border-top: 9px solid #e6b422;
+      box-shadow:
+        0 11px 0 #8a847a,
+        0 20px 30px rgba(0, 0, 0, 0.38),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55);
     }
 
     .pump {
       position: relative;
-      width: min(360px, 100%);
-      flex: 1 1 320px;
+      flex: 1 1 280px;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
       background:
-        linear-gradient(90deg, rgba(255, 255, 255, 0.22), transparent 16% 84%, rgba(0, 0, 0, 0.2)),
-        linear-gradient(#ef4b3c, #c42822 46%, #9a1b22);
-      border-radius: 26px 26px 16px 16px;
-      padding: 14px;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 16px 30px rgba(0, 0, 0, 0.28);
+        linear-gradient(90deg, rgba(255, 255, 255, 0.28), transparent 14% 86%, rgba(0, 0, 0, 0.22)),
+        linear-gradient(#f25a49, #d3262d 42%, #8f1720);
+      border-radius: 28px 28px 14px 14px;
+      padding: 16px 14px 14px;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        inset 0 -10px 0 rgba(0, 0, 0, 0.12),
+        0 16px 26px rgba(0, 0, 0, 0.32);
+    }
+    .pump-price {
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.7), transparent 16% 84%, rgba(90, 60, 30, 0.12)),
+        linear-gradient(#fffaf2, #f0e2c8 48%, #c9b394);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.8),
+        inset 0 -10px 0 rgba(90, 60, 20, 0.08),
+        0 16px 26px rgba(0, 0, 0, 0.28);
     }
     body.is-shaking .pump { animation: shake 0.42s linear; }
+
+    .crown {
+      position: absolute;
+      top: -26px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: #24180f;
+      background: radial-gradient(circle at 32% 28%, #fff 0 12%, #ffe7a4 36%, #e23d32 70%);
+      border: 3px solid #24180f;
+      box-shadow: 0 7px 0 #6d1418, 0 10px 16px rgba(0, 0, 0, 0.25);
+    }
+    .pump-price .crown {
+      background: radial-gradient(circle at 32% 28%, #fff 0 14%, #f6e4b8 40%, #c42822 72%);
+      box-shadow: 0 7px 0 #8a6230, 0 10px 16px rgba(0, 0, 0, 0.22);
+    }
+
+    .boot {
+      position: absolute;
+      left: -8px;
+      bottom: 36px;
+      width: 46px;
+      height: 118px;
+      pointer-events: none;
+    }
+    .pump-price .boot { left: auto; right: -8px; transform: scaleX(-1); }
+    .hose {
+      position: absolute;
+      left: 18px;
+      top: 0;
+      width: 18px;
+      height: 74px;
+      border-right: 7px solid #1b1b1b;
+      border-bottom: 7px solid #1b1b1b;
+      border-radius: 0 0 20px 0;
+    }
+    .gun {
+      position: absolute;
+      left: 2px;
+      bottom: 6px;
+      width: 34px;
+      height: 18px;
+      background: linear-gradient(#3a3a3a, #151515);
+      border-radius: 5px 10px 10px 5px;
+      box-shadow: 0 3px 0 #000;
+    }
+    .spout {
+      position: absolute;
+      right: -16px;
+      top: 4px;
+      width: 18px;
+      height: 7px;
+      background: linear-gradient(#f4f6f8, #9aa0a6);
+      border-radius: 0 4px 4px 0;
+    }
+    .pump.pumping .boot { animation: sway 0.28s ease-in-out infinite; }
+    .pump-price .boot { animation: none; }
 
     .pump-top {
       display: flex;
@@ -239,17 +365,29 @@
       border-radius: 999px;
       padding: 4px 8px;
     }
+    .pump-price .pump-top { color: var(--ink); }
+    .pump-price .grade-pill { background: #9a1b22; color: #fff6ea; }
 
     .face {
-      background: linear-gradient(#fffaf1, #f0e2c8);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.55), transparent 30%),
+        linear-gradient(#fffaf1, #f0e2c8);
       color: var(--ink);
       border-radius: 16px;
       padding: 12px;
-      box-shadow: inset 0 0 0 2px #2a2118;
+      box-shadow:
+        inset 0 0 0 2px #2a2118,
+        0 0 0 3px #e4ddd2,
+        0 0 0 5px #2a2118;
       touch-action: none;
       cursor: pointer;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
+    .face-static { cursor: default; touch-action: auto; }
     .pump.pumping .face { cursor: grabbing; }
+    .pump.pumping .face-static { cursor: default; }
 
     .label {
       margin: 0 0 4px;
@@ -276,6 +414,19 @@
       padding: 6px 10px 4px;
       box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.65), 0 1px 0 rgba(255, 255, 255, 0.45);
     }
+    .led::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0 2px,
+        rgba(0, 0, 0, 0.14) 2px 3px
+      );
+    }
+    .pump-price .led { display: block; width: 100%; }
     .led .ghost, .led .live {
       font-family: var(--mono);
       font-size: 52px;
@@ -338,7 +489,7 @@
 
     .status {
       min-height: 1.3em;
-      margin: 10px 0 0;
+      margin: auto 0 0;
       font-size: 15px;
       font-weight: 500;
     }
@@ -398,25 +549,9 @@
     }
     .stamp[hidden] { display: none; }
 
-    .board {
-      width: 230px;
-      flex: 0 0 230px;
-      background: var(--paper);
-      color: var(--ink);
-      border-radius: 12px;
-      padding: 14px 12px 12px;
-      margin-bottom: 8px;
-      box-shadow: 0 8px 0 #b7afa2, 0 12px 20px rgba(0, 0, 0, 0.22);
-    }
-    .board h2 {
-      margin: 0 0 8px;
-      font-family: var(--display);
-      font-size: 22px;
-      letter-spacing: -0.03em;
-    }
     .ladder {
       list-style: none;
-      margin: 0;
+      margin: 10px 0 0;
       padding: 0;
       display: flex;
       flex-direction: column;
@@ -436,11 +571,30 @@
     .ladder li.done b { text-decoration: line-through; }
     .ladder li.bust { background: var(--red); color: white; }
     .ladder li.left { background: #e7d39a; }
-    .mpg {
-      margin: 10px 0 0;
-      font-size: 12px;
-      color: #6d5c4a;
-      line-height: 1.35;
+    .plate {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: auto;
+    }
+    .plate div {
+      background: #24180f;
+      color: #f6edd9;
+      border-radius: 8px;
+      padding: 7px 8px 6px;
+    }
+    .plate span {
+      display: block;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #e7c27a;
+    }
+    .plate b {
+      font-family: var(--mono);
+      font-weight: 400;
+      font-size: 18px;
     }
 
     .lane {
@@ -594,6 +748,9 @@
       30%, 50%, 70% { transform: translateX(-9px); }
       40%, 60% { transform: translateX(9px); }
     }
+    @keyframes sway {
+      50% { transform: rotate(3deg); }
+    }
     @keyframes flicker {
       0%, 19%, 21%, 54%, 56%, 100% { opacity: 1; }
       20%, 55% { opacity: 0.35; }
@@ -601,11 +758,12 @@
 
     @media (max-width: 760px) {
       .sky { min-height: 168px; padding-top: 16px; }
-      .open-sign, .car { display: none; }
+      .open-sign, .car, .pole, .boot { display: none; }
       .fascia { padding: 12px 14px; }
       .lights { padding-inline: 18px; }
-      .island { flex-direction: column; align-items: stretch; padding: 12px; }
-      .board { width: auto; flex-basis: auto; margin: 0; order: 2; }
+      .bay { display: block; }
+      .island { flex-direction: column; align-items: stretch; padding: 16px 12px 12px; gap: 28px; }
+      .pump-price { order: 2; }
       .ladder { flex-direction: row; overflow-x: auto; }
       .ladder li { flex: 0 0 auto; min-width: 108px; }
       .led .ghost, .led .live { font-size: 44px; }
@@ -623,6 +781,7 @@
       body[data-mode="play"] .pump:not(.pumping) .hold:not(.hot),
       .till strong.pop,
       .led.flash,
+      .pump.pumping .boot,
       body.is-shaking .pump { animation: none; }
       .car { transition: none; }
     }
@@ -632,6 +791,7 @@
   <div class="world">
     <header class="sky">
       <div class="sun" aria-hidden="true"></div>
+      <div class="hills" aria-hidden="true"></div>
       <div class="open-sign" aria-hidden="true">Open</div>
       <div class="canopy">
         <div class="fascia">
@@ -661,11 +821,14 @@
         <circle cx="184" cy="76" r="5" fill="#d9d0c2"/>
       </svg>
 
-      <div class="island">
-        <section class="pump" id="pump" aria-describedby="status lane">
+      <div class="bay">
+        <span class="pole" aria-hidden="true"></span>
+        <div class="island">
+        <section class="pump pump-sale" id="pump" aria-describedby="status lane">
+          <div class="crown" aria-hidden="true">87</div>
           <div class="pump-top">
             <span class="pump-brand">Red Can</span>
-            <span class="grade-pill">Regular</span>
+            <span class="grade-pill">Sale</span>
           </div>
           <div class="face" id="face">
             <div class="sale-row">
@@ -700,15 +863,39 @@
             </div>
           </div>
           <div class="stamp" id="stamp" hidden>Exact</div>
+          <div class="boot" aria-hidden="true">
+            <span class="hose"></span>
+            <span class="gun"><span class="spout"></span></span>
+          </div>
         </section>
 
-        <aside class="board" aria-label="Prices tonight">
-          <h2>Tonight</h2>
-          <ol class="ladder" id="ladder"></ol>
-          <p class="mpg">$3.50 a gallon. Your car gets 28 mpg — a dollar of gas is eight miles.</p>
-        </aside>
+        <section class="pump pump-price" aria-label="Prices tonight">
+          <div class="crown" aria-hidden="true">REG</div>
+          <div class="pump-top">
+            <span class="pump-brand">Red Can</span>
+            <span class="grade-pill">Island 2</span>
+          </div>
+          <div class="face face-static">
+            <p class="label">Price to hit</p>
+            <div class="led amber" id="price-led">
+              <span class="ghost" id="price-ghost">$8.88</span>
+              <span class="live" id="price-live">$2.00</span>
+            </div>
+            <ol class="ladder" id="ladder"></ol>
+            <div class="plate">
+              <div><span>Regular</span><b>$3.50</b></div>
+              <div><span>Your car</span><b>28 mpg</b></div>
+            </div>
+          </div>
+          <div class="boot" aria-hidden="true">
+            <span class="hose"></span>
+            <span class="gun"><span class="spout"></span></span>
+          </div>
+        </section>
+        </div>
+        <span class="pole" aria-hidden="true"></span>
       </div>
-      <p class="lane" id="lane">Hold space or the pump. Let go on the price.</p>
+      <p class="lane" id="lane">Hold space or the red pump. Let go on the price.</p>
     </main>
   </div>
 
@@ -744,6 +931,9 @@
       target: document.getElementById("target"),
       targetGhost: document.getElementById("target-ghost"),
       targetLed: document.getElementById("target-led"),
+      priceLive: document.getElementById("price-live"),
+      priceGhost: document.getElementById("price-ghost"),
+      priceLed: document.getElementById("price-led"),
       priceLabel: document.getElementById("price-label"),
       tank: document.getElementById("tank"),
       status: document.getElementById("status"),
@@ -1028,6 +1218,8 @@
       const price = money(state.target);
       setText(els.targetGhost, ghost(price));
       setText(els.target, price);
+      setText(els.priceGhost, ghost(price));
+      setText(els.priceLive, price);
       setText(els.priceLabel, "Price · sale " + state.round);
       setText(els.bank, money(state.bank));
       setText(els.tank, milesFromCents(tankCents()).toFixed(1) + " mi");
@@ -1059,8 +1251,10 @@
       if (state.target !== state.lastTarget) {
         if (state.lastTarget > 0) {
           els.targetLed.classList.remove("flash");
+          els.priceLed.classList.remove("flash");
           void els.targetLed.offsetWidth;
           els.targetLed.classList.add("flash");
+          els.priceLed.classList.add("flash");
         }
         state.lastTarget = state.target;
       }
