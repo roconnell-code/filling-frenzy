@@ -8,6 +8,7 @@ const host = {
 };
 
 export default defineConfig({
+  base: "./",
   server: host,
   preview: host,
   build: {

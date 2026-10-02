@@ -31,4 +31,6 @@ npm run dev
 
 Open http://127.0.0.1:47291 for the promo, or http://127.0.0.1:47291/play for the game.
 
+The public site is [https://roconnell-code.github.io/filling-frenzy/](https://roconnell-code.github.io/filling-frenzy/). The pumps are at [play.html](https://roconnell-code.github.io/filling-frenzy/play.html).
+
 Screenshots on the promo page live in `public/shots/`.
