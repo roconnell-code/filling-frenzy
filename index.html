@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f3eee4" />
+  <title>Exact Fill — stop on the price</title>
+  <meta name="description" content="Hold the pump. Stop the sale on the exact price. Leave with the gas and the next station is that many miles down the road." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect fill='%2314160f' width='32' height='32' rx='4'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-size='13' fill='%23ffb020' font-family='monospace'%3E%24%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560;9..144,700&family=Inconsolata:wght@500;700&family=Literata:opsz,wght@7..72,400;7..72,600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" crossorigin href="./assets/main-BqDWAKYz.css">
+</head>
+<body>
+  <header class="bar">
+    <a class="mark" href="./">Exact Fill</a>
+    <nav>
+      <a href="#stops">The stop</a>
+      <a href="#road">The road</a>
+      <a class="play" href="play.html">Play</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="sky" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <p class="kicker">Harbor &amp; 5th · Los Angeles</p>
+        <h1>Stop on the price.</h1>
+        <p class="lede">A pump, a city, and the spacebar. The sale runs up. Let go when it matches the number on the glass.</p>
+        <div class="hero-actions">
+          <a class="play big" href="play.html">Start the pump</a>
+          <p class="fine">Hold space, or press and hold the red dispenser.</p>
+        </div>
+        <dl class="price-chip">
+          <div>
+            <dt>Regular</dt>
+            <dd>$6.428</dd>
+          </div>
+          <div>
+            <dt>Per dollar</dt>
+            <dd>4.36 mi</dd>
+          </div>
+          <div>
+            <dt>The car</dt>
+            <dd>28 mpg</dd>
+          </div>
+        </dl>
+      </div>
+      <figure class="frame frame-hero">
+        <img src="shots/station.png" alt="The Exact Fill station at dusk. A black price sign reads $6.428 regular in Los Angeles. Two pumps sit on a yellow island: the sale pump at $0.00 and the price pump aiming at $2.00." />
+        <figcaption>Los Angeles, regular at $6.428 a gallon. Sale one wants $2.00 even.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="strip" aria-label="What the sign is telling you">
+    <p><strong>The amber sign</strong> is the local regular price, not the number you are trying to hit.</p>
+    <p><strong>The green digits</strong> are this sale. They climb while you hold.</p>
+    <p><strong>The ladder</strong> on the right pump is the price for this sale, then the ones after it.</p>
+  </section>
+
+  <section class="band" id="stops">
+    <div class="band-head">
+      <p class="kicker">One squeeze</p>
+      <h2>Three ways the stop ends.</h2>
+      <p>The meter does not slow down on the way in. It runs, lands on the price, and waits a beat. That beat is the whole game.</p>
+    </div>
+
+    <article class="outcome exact">
+      <figure class="frame">
+        <img src="shots/on-the-price.png" alt="The sale display reads $2.00, matching the price to hit. The pump says On the price. Let go. Range shows 8.7 miles." />
+        <figcaption>On the price. The bar turns green. Let go.</figcaption>
+      </figure>
+      <div>
+        <p class="tag">Exact</p>
+        <h3>You stay. The price goes up.</h3>
+        <p>Release while the sale matches the number and that amount stays in the till. The next car on the ladder wants more. In Los Angeles, a clean $2.00 is 0.311 gallons and 8.7 miles already in the tank, and you are still at the island.</p>
+      </div>
+    </article>
+
+    <article class="outcome exact-stamp">
+      <div>
+        <p class="tag">The stamp</p>
+        <h3>$2.00 goes in the till.</h3>
+        <p>The pump stamps Exact. Sale one is crossed off. Sale two, $5.00, lights up. The canopy till turns from $0.00 to $2.00. Hold again when you are ready. The street price does not change until you drive away.</p>
+      </div>
+      <figure class="frame">
+        <img src="shots/exact.png" alt="A green Exact stamp across the sale pump. The till reads $2.00 and the next price to hit is $5.00." />
+        <figcaption>Exact. That sale stays in the till.</figcaption>
+      </figure>
+    </article>
+
+    <article class="outcome over">
+      <figure class="frame">
+        <img src="shots/over.png" alt="A receipt over the pumps. The sale is $2.01 against a $2.00 price. The till is $0.00. The note says you lose all the money." />
+        <figcaption>A cent past. The till is wiped.</figcaption>
+      </figure>
+      <div>
+        <p class="tag">Over</p>
+        <h3>You lose all the money.</h3>
+        <p>Hold through the beat and the sale clicks to $2.01. The receipt is blunt: over by $0.01, till now $0.00. The miles in the tank do not save the drawer. You are still at the same pump.</p>
+      </div>
+    </article>
+
+    <article class="outcome under">
+      <div>
+        <p class="tag">Under</p>
+        <h3>You leave with the gas.</h3>
+        <p>Let go early and the stop is over on purpose. This receipt is 0.532 gallons at $6.428, which is 14.9 miles. The till from the exact $2.00 stays in your pocket. The next pump is already named: Pine &amp; 16th, still in Los Angeles, 14.9 miles across town.</p>
+      </div>
+      <figure class="frame">
+        <img src="shots/miles.png" alt="A receipt that says you left with the gas. Miles of gas: 14.9. Filled at Harbor and 5th, Los Angeles. Next pump is Pine and 16th, 14.9 miles across town." />
+        <figcaption>14.9 miles of gas. The next corner is already on the slip.</figcaption>
+      </figure>
+    </article>
+  </section>
+
+  <section class="road" id="road">
+    <div class="road-copy">
+      <p class="kicker">After you pull away</p>
+      <h2>The tank is the map.</h2>
+      <p>Miles are <span class="mono">dollars ÷ the local price per gallon × 28</span>. At $6.428 a gallon, one dollar is 4.36 miles. At a cheaper pump, the same dollar goes farther. At a European liter price, the sign shows the local currency and the dollar equivalent the car actually uses.</p>
+      <ul>
+        <li>A short tank only changes the corner. Harbor &amp; 5th becomes Pine &amp; 16th. Same city, same posted price.</li>
+        <li>A longer tank reaches the farthest real city you can get to. Leave Los Angeles with about 25 miles and the next island is in Orange, at the Orange County price.</li>
+        <li>Keep the streak and the hop can cross a state, then a border. The canopy sign swaps to that place’s regular.</li>
+      </ul>
+      <p class="source">US figures are AAA Fuel Gauge metro and state averages from 30 Sep 2026. Prices outside the US come from <a href="https://openvan.camp">OpenVan.camp</a>, CC BY 4.0, and refresh when the game loads.</p>
+    </div>
+    <figure class="frame frame-road">
+      <img src="shots/intro.png" alt="The rules card over the station: Exact keeps you going, Over loses the money, Under leaves you with the gas and the miles." />
+      <figcaption>The rules, in front of the pumps, before the first squeeze.</figcaption>
+    </figure>
+  </section>
+
+  <section class="close">
+    <p class="kicker">The island is open</p>
+    <h2>Pull in.</h2>
+    <p>First sale is $2.00. The price on the glass is whatever city you are standing in.</p>
+    <a class="play big" href="play.html">Start the pump</a>
+  </section>
+
+  <footer>
+    <p>Exact Fill. Two pumps, one spacebar.</p>
+    <a href="play.html">Play</a>
+  </footer>
+</body>
+</html>
